@@ -5,7 +5,6 @@ from matplotlib.colors import hsv_to_rgb
 class DColor:
 
     def __init__(self):
-
         self._minBright = 0.85
         self._samples = 2500
 
@@ -17,13 +16,8 @@ class DColor:
 
         self.makeGrid()
 
-    def f(self,x,y):
-        z=x+1j*y
-        #return np.sin(1/z)
-        return z
-    def g(self,x, y):
-        s = x + 1j*y
-        return (s+2)/(s**2 + s + 1)
+    def z(self, x, y):
+        return x+1j*y
 
 
     def makeGrid(self):
@@ -44,8 +38,8 @@ class DColor:
         arr = np.subtract(arr,arrMin)
         return np.divide(arr, arrMax-arrMin)
 
-    def plot(self):
-        zz=self.g(self.xx,self.yy)
+    def plot(self, f):
+        zz=f(self.z(self.xx,self.yy))
         arg,mod = self.makeColorModel(zz)
         s = np.ones_like(arg)
         rgb = hsv_to_rgb(np.dstack((arg,s,mod)))
@@ -54,6 +48,5 @@ class DColor:
         ax = plt.gca().invert_yaxis()
         plt.show()
 
-
 d = DColor()
-d.plot()
+d.plot(lambda z : z**2)
