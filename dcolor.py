@@ -6,6 +6,7 @@ class DColor:
 
     def __init__(self):
 
+        self._minBright = 0.85
         self._samples = 2500
 
         self._xmin = -10
@@ -33,7 +34,8 @@ class DColor:
 
     def makeColorModel(self, zz):
         arg = self.normalize(np.mod(np.angle(zz),-2*np.pi))
-        mod = self.normalize(np.abs(np.log(np.abs(zz))))
+        mod = self.normalize(np.abs(np.log2(np.abs(zz))))
+        mod = [[self._minBright if x < self._minBright else x for x in m] for m in mod]
         return arg, mod
 
     def normalize(self, arr):
@@ -42,21 +44,15 @@ class DColor:
         arr = np.subtract(arr,arrMin)
         return np.divide(arr, arrMax-arrMin)
 
+    def plot(self):
+        zz=self.g(self.xx,self.yy)
+        arg,mod = self.makeColorModel(zz)
+        s = np.ones_like(arg)
+        rgb = hsv_to_rgb(np.dstack((arg,s,mod)))
+        fig = plt.figure()
+        plt.imshow(rgb)
+        ax = plt.gca().invert_yaxis()
+        plt.show()
 
 d = DColor()
-xx,yy = d.makeGrid()
-zz=d.g(xx,yy)
-
-arg,mod = d.makeColorModel(zz)
-s = np.ones_like(arg)
-
-
-#print(len(phase), len(s), len(mag))
-
-#print(np.dstack((phase,s,mag)))
-
-rgb = hsv_to_rgb(np.dstack((arg,s,mod)))
-fig = plt.figure()
-plt.imshow(rgb)
-ax = plt.gca().invert_yaxis()
-plt.show()
+d.plot()
