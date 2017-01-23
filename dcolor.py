@@ -4,23 +4,23 @@ import matplotlib.colors as mcolors
 from matplotlib.colors import hsv_to_rgb
 class DColor:
 
-    def __init__(self):
-        self._minBright = 0.85
-        self._samples = 2500
+    def __init__(self, minBright=0.85, samples=2500, xmin=-10, xmax=10, ymin=-10, ymax=10):
+        self._minBright = minBright
+        self._samples = samples
 
-        self._xmin = -10
-        self._xmax = 10
+        self._xmin = xmin
+        self._xmax = xmax
 
-        self._ymin = -10
-        self._ymax = 10
+        self._ymin = ymin
+        self._ymax = ymax
 
-        self.makeGrid()
+        self.makeDomain()
 
     def z(self, x, y):
         return x+1j*y
 
 
-    def makeGrid(self):
+    def makeDomain(self):
         x = np.linspace(self._xmin, self._xmax, self._samples)
         y = np.linspace(self._ymin, self._ymax, self._samples)
         self.xx, self.yy=np.meshgrid(x,y)
