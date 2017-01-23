@@ -35,7 +35,7 @@ class DColor:
     def makeColorModel(self, zz):
         arg = self.normalize(np.mod(np.angle(zz),-2*np.pi))
         mod = self.normalize(np.abs(np.log2(np.abs(zz))))
-        mod = [[self._minBright if x < self._minBright else x for x in m] for m in mod]
+        mod[mod<self._minBright]=self._minBright
         return arg, mod
 
     def normalize(self, arr):
@@ -53,6 +53,7 @@ class DColor:
         plt.imshow(rgb)
         ax = plt.gca().invert_yaxis()
         plt.show()
+
 
 d = DColor()
 d.plot()
