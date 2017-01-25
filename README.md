@@ -16,7 +16,7 @@ Prepare the source file in your local environment, and create an instance of the
 
 Lambda expressions are used to define and pass functions to the plot() function. For example:
 
-`#dc.plot(lambda z : ((z+1-2j)*(z+2+2j)*((z-2)**2))/(z**3))`
+`dc.plot(lambda z : ((z+1-2j)*(z+2+2j)*((z-2)**2))/(z**3))`
 
 Which results in the following plot:
 ![Example 1](/images/ex1.png)
