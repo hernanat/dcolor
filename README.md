@@ -18,8 +18,6 @@ Lambda expressions are used to define and pass functions to the plot() function.
 
 Which results in the following plot:
 ![Example 1](/images/ex1.png)
-Format: ![Alt Text](url)
-
 ##Website and Documentation
 Currently, this is a one-person project and so these are still under construction. Contact me by e-mail at roguegdi27@gmail.com if you would like to help out with anything.
 
