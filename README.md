@@ -4,7 +4,9 @@ DColor is a Python3 module for visualizing complex-valued functions using a [Dom
 
 ##Requirements
 DColor leverages two well-known Python libraries: Numpy and Matplotlib. Before being able to use DColor, you must install these using the following commands:
+
 `$ python3 -m pip install -U numpy`
+
 `$ python3 -m pip install -U matplotlib`
 
 ##Quick Start
