@@ -9,10 +9,13 @@ DColor leverages two well-known Python libraries: Numpy and Matplotlib. Before b
 
 ##Quick Start
 Prepare the source file in your local environment, and create an instance of the **DColor** object. For example:
+
 `dc = DColor(xmin=-10, xmax=10, ymin=-10, ymax=10, samples=4000)`
 
 Lambda expressions are used to define and pass functions to the plot() function. For example:
+
 `#dc.plot(lambda z : ((z+1-2j)*(z+2+2j)*((z-2)**2))/(z**3))`
+
 Which results in the following plot:
 ![Example 1](/images/ex1.png)
 Format: ![Alt Text](url)
