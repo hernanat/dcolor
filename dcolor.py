@@ -4,9 +4,8 @@ import matplotlib.colors as mcolors
 from matplotlib.colors import hsv_to_rgb
 
 class DColor:
-    def __init__(self, minBright=0.4, samples=3500, xmin=-10, xmax=10, ymin=-10, ymax=10):
+    def __init__(self, samples=3500, xmin=-10, xmax=10, ymin=-10, ymax=10):
         #plot settings
-        self._minBright = minBright
         self._samples = samples
         #axes
         self._xmin = xmin
@@ -58,8 +57,10 @@ class DColor:
     def z(self, x, y):
         return x+1j*y
 
-dc = DColor()
-#dc.plot(lambda z: (z**5+1j*z**4+z**3+1j*z**2+z+1j+1)/np.sin(z))
-#dc.plot(lambda z: z)
-#dc.plot(lambda z : (1/(1-1j*z))-(1+1j*z))
-#dc.plot(lambda z : z**2)
+dc = DColor(xmin=-2, xmax=2, ymin=-2, ymax=2, samples=7000)
+#dc.plot(lambda z : (z**5+1j*z**4+z**3+1j*z**2+z+1j+1)/np.sin(z))
+#dc.plot(lambda z : z)
+dc.plot(lambda z : (1/(1-1j*z))-(1+1j*z))
+#dc.plot(lambda z : z**3)
+#dc.plot(lambda z : ((z+1-2j)*(z+2+2j)*((z-2)**2))/(z**3))
+#dc.plot(lambda z : np.sin(1/z))
