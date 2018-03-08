@@ -1,10 +1,10 @@
-#DColor: A Domain Coloring Python Module
+# DColor: A Domain Coloring Python Module
 
-##What is DColor?
+## What is DColor?
 
 DColor is a Python3 module for visualizing complex-valued functions using a [Domain Coloring](https://en.wikipedia.org/wiki/Domain_coloring) scheme.
 
-##Requirements
+## Requirements
 
 DColor leverages two well-known Python libraries: Numpy and Matplotlib. Before being able to use DColor, you must install these using the following commands:
 
@@ -12,7 +12,7 @@ DColor leverages two well-known Python libraries: Numpy and Matplotlib. Before b
 
 `$ python3 -m pip install -U matplotlib`
 
-##Quick Start
+## Quick Start
 
 Prepare the source file in your local environment, and create an instance of the **DColor** object. For example:
 
@@ -26,10 +26,10 @@ Which results in the following plot:
 
 ![Example 1](/images/ex1.png)
 
-##Website and Documentation
+## Website and Documentation
 
 Currently, this is a one-person project and so these are still under construction. Contact me by e-mail at roguegdi27@gmail.com if you would like to help out with anything.
 
-##Contributing
+## Contributing
 
 If you are interested in contributing or have any suggested changes, clone the repo and make a pull request :)
