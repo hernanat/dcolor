@@ -24,10 +24,10 @@ class DColor:
 
     def makeColorModel(self, zz):
         """Create the HSV color model for the function domain that will be plotted"""
-        H = self.normalize(np.mod(np.angle(zz),2*np.pi)) #Hue determined by arg(z)
-        r = np.log2(np.add(1.0,np.abs(zz)))
-        S = np.divide(np.add(1.0,np.abs(np.sin(np.multiply(2.0*np.pi,r)))),2.0)
-        V = np.divide(np.add(1.0,np.abs(np.cos(np.multiply(2*np.pi,r)))),2.0)
+        H = self.normalize(np.angle(zz) % (2*np.pi)) #Hue determined by arg(z)
+        r = np.log2(1. + np.abs(zz))
+        S = (1. + np.abs(np.sin(2.*np.pi * r))) / 2.
+        V = (1. + np.abs(np.cos(2.*np.pi * r))) / 2.
 
         return H,S,V
 
@@ -35,8 +35,8 @@ class DColor:
         """Used for normalizing data in array based on min/max values"""
         arrMin = np.min(arr)
         arrMax = np.max(arr)
-        arr = np.subtract(arr,arrMin)
-        return np.divide(arr, arrMax-arrMin)
+        arr = arr - arrMin
+        return arr / (arrMax - arrMin)
 
     def plot(self, f, xdim=10, ydim=8, plt_dpi=100):
         """Plot a complex-valued function
