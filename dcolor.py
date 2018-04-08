@@ -24,10 +24,10 @@ class DColor:
 
     def makeColorModel(self, zz):
         """Create the HSV color model for the function domain that will be plotted"""
-        H = self.normalize(np.angle(zz) % (2*np.pi)) #Hue determined by arg(z)
+        H = self.normalize(np.angle(zz) % (2. * np.pi)) #Hue determined by arg(z)
         r = np.log2(1. + np.abs(zz))
-        S = (1. + np.abs(np.sin(2.*np.pi * r))) / 2.
-        V = (1. + np.abs(np.cos(2.*np.pi * r))) / 2.
+        S = (1. + np.abs(np.sin(2. * np.pi * r))) / 2.
+        V = (1. + np.abs(np.cos(2. * np.pi * r))) / 2.
 
         return H,S,V
 
