@@ -56,14 +56,15 @@ class DColor:
         plt.gca().invert_yaxis() #make CCW orientation positive
         plt.gca().get_xaxis().set_visible(False)
         plt.gca().get_yaxis().set_visible(False)
-        plt.show()
+        return plt
 
     def showPlot(self, f, xdim=10, ydim=8, plt_dpi=100):
         plt = self.getPlot(f, xdim=10, ydim=8, plt_dpi=100)
+        plt.show()
 
     def savePlot(self, f, fname, xdim=10, ydim=8, plt_dpi=100):
         plt = self.getPlot(f, xdim=10, ydim=8, plt_dpi=100)
-        plt.savefig(fname, bbox_inches = tight)
+        plt.savefig(fname, bbox_inches = "tight")
 
     def z(self, x, y):
         """return complex number x+iy
