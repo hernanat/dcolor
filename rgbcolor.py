@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 import matplotlib.colors as mcolors
-from matplotlib.colors import hsv_to_rgb
 
 class DColor:
     def __init__(self, samples=1000, xmin=-8, xmax=8, ymin=-8, ymax=8):
@@ -23,25 +22,19 @@ class DColor:
         y = np.linspace(self._ymin, self._ymax, self._samples)
         self.xx, self.yy=np.meshgrid(x,y)
 
-    def makeColorModel(self, zz):
-        """Create the HSV color model for the function domain that will be plotted"""
-        H = self.normalize(np.angle(zz) % (2. * np.pi)) #Hue determined by arg(z)
-        r = np.log2(1. + np.abs(zz))
-        S = (1. + np.abs(np.sin(2. * np.pi * r))) / 2.
-        V = (1. + np.abs(np.cos(2. * np.pi * r))) / 2.
+    def makeRGB(self, zz,expand) :
+        absz = np.abs(zz)
+        expand = 1/expand
+        r = expand*absz*.5
+        g = expand*absz*1.00
+        b = expand*absz*.5
+        r = np.clip(r,0,1)
+        g = np.clip(g,0,1)
+        b = np.clip(b,0,1)
+        return np.dstack((r,g,b))
 
-        return H,S,V
-
-    def normalize(self, arr):
-        """Used for normalizing data in array based on min/max values"""
-        arrMin = np.min(arr)
-        arrMax = np.max(arr)
-        arr = arr - arrMin
-        return arr / (arrMax - arrMin)
-
-    def plot(self, f, xdim=8, ydim=8, plt_dpi=100,title=''):
-        """Plot a complex-valued function
-            Arguments:
+    def plot(self, f, xdim=8, ydim=8, plt_dpi=100,title="none",expand=1):
+        """Plot a complex-valued functionq
             f -- a (preferably) lambda-function defining a complex-valued function
             Keyword Arguments:
             xdim -- x dimensions
@@ -49,9 +42,7 @@ class DColor:
             plt_dpi -- density of pixels per inch
         """
         zz=f(self.z(self.xx,self.yy))
-        H,S,V = self.makeColorModel(zz)
-        rgb = hsv_to_rgb(np.dstack((H,S,V)))
-
+        rgb = self.makeRGB(zz,expand)
         fig = plt.figure(figsize=(xdim, ydim), dpi=plt_dpi)
         ax = fig.gca()
         val = str('x xmin=')
@@ -72,4 +63,3 @@ class DColor:
             If inputs are arrays, then it returns an array with corresponding x_j+iy_j values
         """
         return x+1j*y
-
