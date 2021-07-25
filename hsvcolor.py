@@ -4,13 +4,12 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
 import matplotlib.colors as mcolors
-from matplotlib.colors import hsv_to_rgb
 
 class DColor:
     def __init__(self, samples=1000, xmin=-8, xmax=8, ymin=-8, ymax=8):
         mpl.rcParams['toolbar'] = 'None'
         self._samples = samples
-        #axes
+        # axes
         self._xmin = xmin
         self._xmax = xmax
         self._ymin = ymin
@@ -25,12 +24,59 @@ class DColor:
 
     def makeColorModel(self, zz):
         """Create the HSV color model for the function domain that will be plotted"""
-        H = self.normalize(np.angle(zz) % (2. * np.pi)) # Hue determined by arg(z)
+        h = self.normalize(np.angle(zz) % (2. * np.pi)) # Hue determined by arg(z)
         r = np.log2(1. + np.abs(zz))
-        S = (1. + np.abs(np.sin(2. * np.pi * r))) / 2.
-        V = (1. + np.abs(np.cos(2. * np.pi * r))) / 2.
+        s = (1. + np.abs(np.sin(2. * np.pi * r))) / 2.
+        v = (1. + np.abs(np.cos(2. * np.pi * r))) / 2.
+        
+        r = np.empty_like(h)
+        g = np.empty_like(h)
+        b = np.empty_like(h)
 
-        return H,S,V
+        i = (h * 6.0).astype(int)
+        f = (h * 6.0) - i
+        p = v * (1.0 - s)
+        q = v * (1.0 - s * f)
+        t = v * (1.0 - s * (1.0 - f))
+
+        idx = i % 6 == 0
+        r[idx] = v[idx]
+        g[idx] = t[idx]
+        b[idx] = p[idx]
+
+        idx = i == 1
+        r[idx] = q[idx]
+        g[idx] = v[idx]
+        b[idx] = p[idx]
+
+        idx = i == 2
+        r[idx] = p[idx]
+        g[idx] = v[idx]
+        b[idx] = t[idx]
+
+        idx = i == 3
+        r[idx] = p[idx]
+        g[idx] = q[idx]
+        b[idx] = v[idx]
+
+        idx = i == 4
+        r[idx] = t[idx]
+        g[idx] = p[idx]
+        b[idx] = v[idx]
+
+        idx = i == 5
+        r[idx] = v[idx]
+        g[idx] = p[idx]
+        b[idx] = q[idx]
+
+        idx = s == 0
+        r[idx] = v[idx]
+        g[idx] = v[idx]
+        b[idx] = v[idx]
+
+        rgb = np.stack([r, g, b], axis=-1)
+
+        return rgb
 
     def normalize(self, arr):
         """Used for normalizing data in array based on min/max values"""
@@ -48,10 +94,6 @@ class DColor:
             ydim -- y dimensions
             plt_dpi -- density of pixels per inch
         """
-        zz=f(self.z(self.xx,self.yy))
-        H,S,V = self.makeColorModel(zz)
-        rgb = hsv_to_rgb(np.dstack((H,S,V)))
-
         fig = plt.figure(figsize=(xdim, ydim), dpi=plt_dpi)
         ax = fig.gca()
         val = str('x xmin=')
@@ -60,7 +102,9 @@ class DColor:
         val = str('y ymin=')
         val = val + str(self._ymin) + " xmax=" + str(self._ymax)
         ax.set_ylabel(val)
-        ax.imshow(rgb)
+        zz=f(self.z(self.xx,self.yy))
+        image = self.makeColorModel(zz)
+        ax.imshow(image)
         ax.invert_yaxis() # make CCW orientation positive
         ax.get_xaxis().set_visible(True)
         ax.get_yaxis().set_visible(True)
