@@ -12,19 +12,50 @@ DColor leverages two well-known Python libraries: Numpy and Matplotlib. Before b
 
 `$ python3 -m pip install -U matplotlib`
 
-## Quick Start
+## clone the repository
 
-Prepare the source file in your local environment, and create an instance of the **DColor** object. For example:
+`git clone https://github.com/hernanat/dcolor.git`
 
-`dc = DColor(xmin=-10, xmax=10, ymin=-10, ymax=10, samples=4000)`
+## run example
 
-Lambda expressions are used to define and pass functions to the plot() function. For example:
+`python dcolorExample.py`
 
-`dc.plot(lambda z : ((z+1-2j)*(z+2+2j)*((z-2)**2))/(z**3))`
+It generates a series of examples.
+When each image appears clicking the close button starts the next example.
+Lambda expressions are used to define and pass functions to the plot() function.
+The last example is:
+
+`dc.plot(lambda z : ((z**2-1)*(z-2- 1j)**2)/(z**2 +2+ 2j),
+    title='((z**2-1)*(z-2- 1j)**2)/(z**2 +2+ 2j)')
+
 
 Which results in the following plot:
 
-![Example 1](/images/ex1.png)
+![dcolor example](/images/dcolor.png)
+
+## hsvcolor
+
+This is like dcolor except that it does not convert the HSV image to RGB
+
+`python hsvcolorExample.py`
+
+Will create the images.
+The last image produces:
+
+![hsvcolor example](/images/hsvcolor.png
+
+## rgbcolor
+
+This is designed to show  the magnitude of abs(z).
+White means big, shades of green means intermediate, and black means small.
+
+`python rgbcolorExample.py`
+
+Will create the images.
+The last image produces:
+
+![hsvcolor example](/images/rgbcolor.png
+
 
 ## Website and Documentation
 
