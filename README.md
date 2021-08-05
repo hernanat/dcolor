@@ -42,7 +42,7 @@ This is like dcolor except that it does not convert the HSV image to RGB
 Will create the images.
 The last image produces:
 
-![hsvcolor example](/images/hsvcolor.png
+![hsvcolor example](/images/hsvcolor.png)
 
 ## rgbcolor
 
@@ -54,7 +54,7 @@ White means big, shades of green means intermediate, and black means small.
 Will create the images.
 The last image produces:
 
-![hsvcolor example](/images/rgbcolor.png
+![hsvcolor example](/images/rgbcolor.png)
 
 
 ## Website and Documentation
