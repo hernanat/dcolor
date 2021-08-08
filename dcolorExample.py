@@ -2,6 +2,7 @@ import numpy as np
 import dcolor
 dc = dcolor.DColor()
 dc.plot(lambda z : z,title='z')
+dc.plot(lambda z : z**z,title='z**z')
 dc.plot(lambda z : z+4,title='z+4')
 dc.plot(lambda z : z-4,title='z-4')
 dc.plot(lambda z : z+4j,title='z+4j')
