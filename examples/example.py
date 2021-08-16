@@ -10,8 +10,8 @@ class example():
         dc.plot(lambda z : (((z+4)*(z-4)*(z+4j)*(z-4j))**(1/8)),
            title='(((z+4)*(z-4)*(z+4j)*(z-4j))**(1/8))')
         dc.plot(lambda z : 1/z,title='1/z')
-        dc.plot(lambda z : (np.sin(2*np.pi/z)),title='sin(2*np.pi/z)')
-        dc.plot(lambda z : (np.cos(2*np.pi/z)),title='cos(2*np.pi//z)')
+        dc.plot(lambda z : (np.sin(1/z)),title='sin(1/z)')
+        dc.plot(lambda z : (np.cos(1/z)),title='cos(1/z)')
         dc.plot(lambda z : np.sin(z),title='sin(z)')
         dc.plot(lambda z : np.cos(z),title='cos(z)')
         dc.plot(lambda z : z**3 -1,title='z**3 -1')
