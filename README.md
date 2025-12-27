@@ -1,5 +1,9 @@
 # DColor: A Domain Coloring Python Module
 
+# 27DEC2025 UPDATE
+
+This project has been migrated to Codeberg. Please submit any future issues / changes [here](https://codeberg.org/hernanat/dcolor).
+
 ## What is DColor?
 
 DColor is a Python 3 module for visualizing complex-valued functions using a [Domain Coloring](https://en.wikipedia.org/wiki/Domain_coloring) scheme.
