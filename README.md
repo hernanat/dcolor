@@ -37,61 +37,63 @@ poetry install
 poetry shell
 ```
 
-<!-- TODO 
+<!-- TODO
 Figuring out how to install this this more permanently is a hanging question.
 Poetry will let you build a wheel and tarball with `poetry build`, but getting this into PyPI would be better.
 -->
 
-## Examples
+## Usage
 
-Note that `python` commands in this section should be run inside the virtual environment.
-
-### Default
-
-```bash
-python dcolorExample.py
-```
-
-It generates a series of examples.
-When each image appears clicking the close button starts the next example.
-Lambda expressions are used to define and pass functions to the plot() function.
-The last example is:
+Heres's a short script which plots a function with poles and zeros.
+A lambda expression is used to define the function, which is then passed to `dcolor.plot`.
 
 ```python
-dc.plot(lambda z : ((z**2-1)*(z-2- 1j)**2)/(z**2 +2+ 2j),
-    title='((z**2-1)*(z-2- 1j)**2)/(z**2 +2+ 2j)')
+import dcolor
+import matplotlib.pyplot as plt
+
+plt.title("$f(z) = \\frac{(z^2 - 1)(z - 2 - 1j)^2}{z^2 +2+ 2j}$")
+dcolor.dcolor(
+  lambda z : ((z**2 - 1)*(z - 2 - 1j)**2)/(z**2 + 2 + 2j),
+  xlim=(-8, 8),
+  ylim=(-8, 8),
+)
+# plt.show() called implicitly
 ```
 
-Which results in the following plot:
+## Examples
 
-![dcolor example](images/dcolor.png)
+A selection of example functions can be plotted from `examples/example.py`.
+It contains several command-line options for both spawning interactive plots and
+generating static images.
 
-### hsvcolor
-
-This is like dcolor except that it does not convert the HSV image to RGB
+The example images below can be plotted with the following command, which plots the
+same function from the usage section:
 
 ```bash
-python hsvcolorExample.py
+python examples/example.py -s algebraic.3 -c {METHOD}
 ```
 
-Will create the images.
-The last image produces:
+Note that this script may not function outside of the Poetry virtual environment.
 
-![hsvcolor example](images/hsvcolor.png)
+### Default method (magnitude_oscillating)
 
-### rgbcolor
+The default method assigns the complex argument to hue.
+Increasing magnitudes produce an effect resembling logarithmically-spaced contours.
 
-This is designed to show  the magnitude of abs(z).
+![magnitude_oscillating example](images/magnitude_oscillating_algebraic_3.png)
+
+### raw_magnitude_oscillating
+
+This is like the default, except that it does not convert the HSV image to RGB.
+
+![raw_magnitude_oscillating example](images/raw_magnitude_oscillating_algebraic_3.png)
+
+### green_magnitude
+
+This is designed to show  the magnitude of z.
 White means big, shades of green means intermediate, and black means small.
 
-```bash
-python rgbcolorExample.py
-```
-
-Will create the images.
-The last image produces:
-
-![rgbcolor example](images/rgbcolor.png)
+![green_magnitude_example](images/green_magnitude_algebraic_3.png)
 
 
 ## Website and Documentation

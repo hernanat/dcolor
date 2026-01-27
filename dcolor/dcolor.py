@@ -1,75 +1,169 @@
-#!/usr/bin/env python3
+"""
+dcolor.dcolor
+
+Module providing main domain coloring functionality.
+"""
+from typing import Callable, Optional, Tuple
+from typing_extensions import TypeAliasType
 
 import matplotlib.pyplot as plt
-import matplotlib as mpl
+from matplotlib.axes import Axes
 import numpy as np
-import matplotlib.colors as mcolors
-from matplotlib.colors import hsv_to_rgb
+import numpy.typing as npt
+
+import dcolor.color_maps as color_maps
+
+ComplexFunction = TypeAliasType(
+    "ComplexFunction",
+    Callable[[npt.NDArray[np.complexfloating]], npt.NDArray[np.complexfloating]],
+)
+
+
+def _make_domain(
+    xmin: float, xmax: float, ymin: float, ymax: float, samples: int
+) -> color_maps.ComplexPlane:
+    """Create the domains for Real (x) and Imaginary (y) values respectively"""
+    x = np.linspace(xmin, xmax, samples)
+    y = np.linspace(ymin, ymax, samples)
+    xx, yy = np.meshgrid(x, y)
+    return xx + 1j * yy
 
 
 class DColor:
-    def __init__(self, samples=1000, xmin=-8, xmax=8, ymin=-8, ymax=8):
-        mpl.rcParams["toolbar"] = "None"
+    """
+    A wrapper object around a complex function for plotting using matplotlib.
+
+    `f` --      The complex-valued function to plot. A callable which accepts numpy array of complex values.
+
+    Optional keyword arguments:
+    `cmap` --       A function which converts a complex number to an RGB color
+                    (or an array of the former to an array of the latter).
+                    The default is `dcolor.cmap.magnitude_oscillating`
+
+    `samples` --    The number of samples along each axis to use for plotting.
+                    The square of this value is how many values are actually calculated.
+    """
+
+    def __init__(
+        self,
+        f: ComplexFunction,
+        *,
+        cmap: color_maps.ComplexColorMap = color_maps.magnitude_oscillating,
+        samples=1000,
+    ):
+        self._function = f
         self._samples = samples
-        # axes
-        self._xmin = xmin
-        self._xmax = xmax
-        self._ymin = ymin
-        self._ymax = ymax
-        self.makeDomain()
+        # Extra
+        self._cmap = cmap
 
-    def makeDomain(self):
-        """Create the domains for Real (x) and Imaginary (y) values respectively"""
-        x = np.linspace(self._xmin, self._xmax, self._samples)
-        y = np.linspace(self._ymin, self._ymax, self._samples)
-        self.xx, self.yy = np.meshgrid(x, y)
+        self._need_redraw = False
+        self.axes: Optional[Axes] = None
 
-    def makeColorModel(self, zz):
-        """Create the HSV color model for the function domain that will be plotted"""
-        H = self.normalize(np.angle(zz) % (2.0 * np.pi))  # Hue determined by arg(z)
-        r = np.log2(1.0 + np.abs(zz))
-        S = (1.0 + np.abs(np.sin(2.0 * np.pi * r))) / 2.0
-        V = (1.0 + np.abs(np.cos(2.0 * np.pi * r))) / 2.0
+    def _set_need_redraw(self):
+        """Set that the axes need to redraw. Used as a callback for mouse releases."""
+        self._need_redraw = True
 
-        return H, S, V
-
-    def normalize(self, arr):
-        """Used for normalizing data in array based on min/max values"""
-        arrMin = np.min(arr)
-        arrMax = np.max(arr)
-        arr = arr - arrMin
-        return arr / (arrMax - arrMin)
-
-    def plot(self, f, xdim=8, ydim=8, plt_dpi=100, title=""):
-        """Plot a complex-valued function
-        Arguments:
-        f -- a (preferably) lambda-function defining a complex-valued function
-        Keyword Arguments:
-        xdim -- x dimensions
-        ydim -- y dimensions
-        plt_dpi -- density of pixels per inch
+    def _plot(self, clear: bool = False):
         """
-        zz = f(self.z(self.xx, self.yy))
-        H, S, V = self.makeColorModel(zz)
-        rgb = hsv_to_rgb(np.dstack((H, S, V)))
-
-        fig = plt.figure(figsize=(xdim, ydim), dpi=plt_dpi)
-        ax = fig.gca()
-        val = str("x xmin=")
-        val = val + str(self._xmin) + " xmax=" + str(self._xmax)
-        ax.set_xlabel(val)
-        val = str("y ymin=")
-        val = val + str(self._ymin) + " xmax=" + str(self._ymax)
-        ax.set_ylabel(val)
-        ax.imshow(rgb)
-        ax.invert_yaxis()  # make CCW orientation positive
-        ax.get_xaxis().set_visible(True)
-        ax.get_yaxis().set_visible(True)
-        ax.set_title(title)
-        plt.show()
-
-    def z(self, x, y):
-        """return complex number x+iy
-        If inputs are arrays, then it returns an array with corresponding x_j+iy_j values
+        Replot the contained function with the current axes limits.
+        Intended to be used as a callback after axes bounds change.
         """
-        return x + 1j * y
+        if self.axes is None:
+            return
+
+        if clear:
+            for image in self.axes.images:
+                image.remove()
+
+        xmin, xmax = self.axes.get_xlim()
+        ymin, ymax = self.axes.get_ylim()
+
+        # Call, color, and plot the image on the current axes limits
+        zz = self._function(_make_domain(xmin, xmax, ymin, ymax, self._samples))
+        rgb = self._cmap(zz)
+        self.axes.imshow(rgb, origin="lower", extent=(xmin, xmax, ymin, ymax))
+
+    def plot(
+        self,
+        axes: Optional[Axes] = None,
+        xlim: Optional[Tuple[float, float]] = None,
+        ylim: Optional[Tuple[float, float]] = None,
+        grid: bool = True,
+        show: bool = True,
+    ):
+        """
+        Plot the contained function on the given boundaries, add axis labels, and add gridlines.
+        """
+        if axes is None:
+            self.axes = plt.gca()
+            axes = self.axes
+        else:
+            self.axes = axes
+
+        if xlim is not None:
+            axes.set_xlim(xlim)
+        if ylim is not None:
+            axes.set_ylim(ylim)
+
+        self._plot()
+
+        axes.set_xlabel("$\\Re$")
+        axes.set_ylabel("$\\Im$")
+        axes.axhline(y=0, color="k")
+        axes.axvline(x=0, color="k")
+        if grid:
+            axes.grid(True, which="both", linestyle="dashed")
+
+        if show:
+            plt.show()
+
+
+def dcolor(
+    f: ComplexFunction,
+    *,
+    axes: Optional[Axes] = None,
+    xlim: Optional[Tuple[float, float]] = None,
+    ylim: Optional[Tuple[float, float]] = None,
+    cmap: color_maps.ComplexColorMap = color_maps.magnitude_oscillating,
+    samples: int = 1000,
+    grid: bool = True,
+    show: bool = True,
+) -> DColor:
+    """
+    Plot a complex-valued function `f`. By default, this uses the current matplotlib axes.
+
+    Note that the current figure's DPI settings will be used to draw the image.
+    If this matters to you, call `Figure.set_dpi` beforehand.
+
+    Arguments:
+    `f` --      The complex-valued function to plot. A callable which accepts numpy array of complex values.
+
+    Optional keyword arguments:
+    `axes` --       The matplotlib axes on which to plot. Defaults to the current axes.
+
+    `xlim` --       The x (real) limits to use when plotting.
+                    If absent, prior values from `xlim()` are respected.
+
+    `ylim` --       The y (imaginary) limits to use when plotting
+                    If absent, prior values from `ylim()` are respected.
+
+    `cmap` --       A function which converts a complex number to an RGB color
+                    (or an array of the former to an array of the latter).
+                    The default is `dcolor.color_maps.magnitude_oscillating`
+
+    `samples` --    The number of samples along each axis to use for plotting.
+                    Note that the square of this value is how many values are actually calculated.
+
+    `grid` --       Whether to draw gridlines at the tick positions. Defaults to True.
+
+    `show` --       Whether to show the plot with Matplotlib. Defaults to True.
+    """
+    ret = DColor(f, cmap=cmap, samples=samples)
+    ret.plot(
+        axes=axes,
+        xlim=xlim,
+        ylim=ylim,
+        grid=grid,
+        show=show,
+    )
+    return ret
